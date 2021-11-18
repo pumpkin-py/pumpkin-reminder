@@ -1,0 +1,80 @@
+msgid I don't know how to parse `{datetime_str}`, please try again.
+msgstr
+
+msgid Reminder for you created. Reminder will be sent: {date}
+msgstr
+
+msgid Reminder for {name} created. Reminder will be sent: {date}
+msgstr
+
+msgid Invalid status. Allowed: {status}
+msgstr
+
+msgid Reminder with ID {id} does not exists.
+msgstr
+
+msgid Can't reschedule other's reminders.
+msgstr
+
+msgid Reschedule time must be in furuter.
+msgstr
+
+msgid New time
+msgstr
+
+msgid Do you really want to edit reminder time/date?
+msgstr
+
+msgid ✅ for confirmation
+msgstr
+
+msgid ❎ for storno
+msgstr
+
+msgid Reschedule timed out.
+msgstr
+
+msgid Reminder rescheduled.
+msgstr
+
+msgid Rescheduling aborted.
+msgstr
+
+msgid Can't delete other's reminders.
+msgstr
+
+msgid Do you really want to delete this reminder?
+msgstr
+
+msgid Deleting timed out.
+msgstr
+
+msgid Deletion aborted.
+msgstr
+
+msgid Reminder
+msgstr
+
+msgid Reminded by
+msgstr
+
+msgid Message
+msgstr
+
+msgid URL
+msgstr
+
+msgid Reminder ID
+msgstr
+
+msgid Author
+msgstr
+
+msgid Reminded
+msgstr
+
+msgid Remind date
+msgstr
+
+msgid Status
+msgstr
