@@ -1,3 +1,30 @@
+msgid Reminder
+msgstr
+
+msgid Reminded by
+msgstr
+
+msgid Message
+msgstr
+
+msgid URL
+msgstr
+
+msgid Reminder ID
+msgstr
+
+msgid Author
+msgstr
+
+msgid Reminded
+msgstr
+
+msgid Remind date
+msgstr
+
+msgid Status
+msgstr
+
 msgid I don't know how to parse `{datetime_str}`, please try again.
 msgstr
 
@@ -50,31 +77,4 @@ msgid Deleting timed out.
 msgstr
 
 msgid Deletion aborted.
-msgstr
-
-msgid Reminder
-msgstr
-
-msgid Reminded by
-msgstr
-
-msgid Message
-msgstr
-
-msgid URL
-msgstr
-
-msgid Reminder ID
-msgstr
-
-msgid Author
-msgstr
-
-msgid Reminded
-msgstr
-
-msgid Remind date
-msgstr
-
-msgid Status
 msgstr

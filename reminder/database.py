@@ -6,7 +6,7 @@ import enum
 from sqlalchemy import BigInteger, Column, Integer, String, DateTime, Enum
 from typing import List, Dict
 
-from database import database, session
+from pie.database import database, session
 
 
 class ReminderStatus(enum.Enum):
@@ -25,7 +25,7 @@ class ReminderItem(database.base):
         idx: The database ID.
         guild_id: ID of the guild.
         author_id: User ID of reminder author.
-        remind_id: User ID of reminded user.
+        recipient_id: User ID of reminded user.
         permalink: Message URL.
         message: Reminder text (None if empty).
         origin_date: Date of creation.
@@ -38,7 +38,7 @@ class ReminderItem(database.base):
     idx = Column(Integer, primary_key=True, autoincrement=True)
     guild_id = Column(BigInteger, default=None)
     author_id = Column(BigInteger, default=None)
-    remind_id = Column(BigInteger, default=None)
+    recipient_id = Column(BigInteger, default=None)
     permalink = Column(String, default=None)
     message = Column(String, default=None)
     origin_date = Column(DateTime(timezone=True), default=None)
@@ -47,9 +47,8 @@ class ReminderItem(database.base):
 
     @staticmethod
     def add(
-        guild_id: int,
-        author_id: int,
-        remind_id: int,
+        author: nextcord.Member,
+        recipient: nextcord.Member,
         permalink: str,
         message: str,
         origin_date: datetime,
@@ -58,9 +57,8 @@ class ReminderItem(database.base):
         """Creates a new ReminderItem in the database.
 
         Args:
-            guild_id: ID of the guild.
-            author_id: User ID of reminder author.
-            remind_id: User ID of reminded author.
+            author: Reminder author.
+            recipient: Reminder recipient.
             permalink: URL of reminder message.
             message: Reminder text (None if empty).
             origin_date: Date of creation.
@@ -77,9 +75,9 @@ class ReminderItem(database.base):
             raise ValueError
 
         item = ReminderItem(
-            guild_id=guild_id,
-            author_id=author_id,
-            remind_id=remind_id,
+            guild_id=author.guild.id if hasattr(author, "guild") else 0,
+            author_id=author.id,
+            recipient_id=recipient.id,
             permalink=permalink,
             message=message,
             origin_date=origin_date,
@@ -93,9 +91,9 @@ class ReminderItem(database.base):
 
     @staticmethod
     def get_all(
-        guild_id: int = None,
+        guild: nextcord.Guild = None,
         idx: int = None,
-        remind_id: int = None,
+        recipient: nextcord.Member = None,
         status: ReminderStatus = None,
         min_origin_date: datetime = None,
         max_origin_date: datetime = None,
@@ -105,9 +103,9 @@ class ReminderItem(database.base):
         """Retreives List of ReminderItem filtered by Guild ID.
 
         Args:
-            guild_id: Guild whose items are to be returned.
+            guild: Guild whose items are to be returned.
             idx: ID of reminder item
-            remind_id: ID of reminded user whose items are to be returned.
+            recipient: nextcord.Member object user whose items are to be returned.
             status: Status of items to be returned
             min_origin_date: Filter items created after this date.
             max_origin_date: Filter items created before this date.
@@ -119,14 +117,14 @@ class ReminderItem(database.base):
         """
         query = session.query(ReminderItem)
 
-        if guild_id is not None:
-            query = query.filter_by(guild_id=guild_id)
+        if guild is not None:
+            query = query.filter_by(guild_id=guild.id)
 
         if idx is not None:
             query = query.filter_by(idx=idx)
 
-        if remind_id is not None:
-            query = query.filter_by(remind_id=remind_id)
+        if recipient is not None:
+            query = query.filter_by(recipient_id=recipient.id)
 
         if status is not None:
             query = query.filter_by(status=status)
@@ -154,20 +152,10 @@ class ReminderItem(database.base):
         session.delete(self)
         session.commit()
 
-    def reschedule(self, new_date: datetime):
-        """
-        Change reminding date and time
-
-        Args:
-            new_date: New date reminder should be sent
-        """
-        self.remind_date = new_date
-        session.commit()
-
     def __repr__(self) -> str:
         return (
             f'<ReminderItem idx="{self.idx}" guild_id="{self.guild_id}" '
-            f'author_id="{self.author_id}" remind_id="{self.remind_id}" '
+            f'author_id="{self.author_id}" recipient_id="{self.recipient_id}" '
             f'permalink="{self.permalink}" message="{self.message}" '
             f'origin_date="{self.origin_date}" remind_date="{self.remind_date}" '
             f'status="{self.status}">'
@@ -183,7 +171,7 @@ class ReminderItem(database.base):
             "idx": self.idx,
             "guild_id": self.guild_id,
             "author_id": self.author_id,
-            "remind_id": self.remind_id,
+            "recipient_id": self.recipient_id,
             "permalink": self.permalink,
             "message": self.message,
             "origin_date": self.origin_date,

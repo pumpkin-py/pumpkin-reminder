@@ -1,3 +1,30 @@
+msgid Reminder
+msgstr Upomínka
+
+msgid Reminded by
+msgstr Autor upomínky
+
+msgid Message
+msgstr Zpráva
+
+msgid URL
+msgstr URL
+
+msgid Reminder ID
+msgstr ID upomínky
+
+msgid Author
+msgstr Autor
+
+msgid Reminded
+msgstr Upomínaný
+
+msgid Remind date
+msgstr Datum připomenutí
+
+msgid Status
+msgstr Status
+
 msgid I don't know how to parse `{datetime_str}`, please try again.
 msgstr Nevím jak přečíst `{datetime_str}`, zkus to znovu.
 
@@ -51,30 +78,3 @@ msgstr Čas na smazání vypršel.
 
 msgid Deletion aborted.
 msgstr Smazání zrušeno.
-
-msgid Reminder
-msgstr Upomínka
-
-msgid Reminded by
-msgstr Autor upomínky
-
-msgid Message
-msgstr Zpráva
-
-msgid URL
-msgstr URL
-
-msgid Reminder ID
-msgstr ID upomínky
-
-msgid Author
-msgstr Autor
-
-msgid Reminded
-msgstr Upomínaný
-
-msgid Remind date
-msgstr Datum připomenutí
-
-msgid Status
-msgstr Status
