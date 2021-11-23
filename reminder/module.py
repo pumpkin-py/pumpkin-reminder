@@ -11,6 +11,7 @@ from nextcord.errors import HTTPException, Forbidden
 import dateutil.parser
 
 from pie import check, i18n, logger, utils
+from pie.utils.objects import ConfirmView
 
 from .database import ReminderStatus, ReminderItem
 
@@ -261,7 +262,7 @@ class Reminder(commands.Cog):
 
         date = utils.time.format_datetime(date)
 
-        await bot_log.debug(
+        await guild_log.debug(
             ctx.author,
             ctx.channel,
             f"Reminder created for {member.name}",
@@ -353,47 +354,20 @@ class Reminder(commands.Cog):
             value=print_date,
             inline=False,
         )
-        embed.add_field(
-            name=_(ctx, "Do you really want to edit reminder time/date?"),
-            value=_(ctx, "✅ for confirmation") + _(ctx, "❎ for storno"),
-            inline=False,
-        )
 
-        message = await ctx.send(embed=embed)
+        embed.title = _(ctx, "Do you want to reschedule this reminder?")
 
-        await message.add_reaction("✅")
-        await message.add_reaction("❎")
+        view = ConfirmView(ctx, embed)
 
-        def check_id(reaction, user_id):
-            return (
-                reaction.message.id == message.id
-                and (str(reaction.emoji) == "✅" or str(reaction.emoji) == "❎")
-                and user_id.id == query.recipient_id
-            )
+        value = await view.send()
 
-        try:
-            reaction, user = await self.bot.wait_for(
-                "reaction_add", check=check_id, timeout=60
-            )
-        except asyncio.TimeoutError:
+        if value is None:
             await ctx.send(_(ctx, "Reschedule timed out."))
+        elif value:
+            query.delete()
+            await ctx.send(_(ctx, "Reminder rescheduled."))
         else:
-            if str(reaction.emoji) == "✅":
-                await bot_log.debug(
-                    ctx.author,
-                    ctx.channel,
-                    f"Rescheduling reminder - ID: {query.idx}, time: {date}, status: {query.status}",
-                )
-
-                query.remind_date = date
-                query.save()
-                await ctx.send(_(ctx, "Reminder rescheduled."))
-            elif str(reaction.emoji) == "❎":
-                await ctx.send(_(ctx, "Rescheduling aborted."))
-        try:
-            await message.delete()
-        except (nextcord.errors.NotFound, nextcord.errors.Forbidden):
-            pass
+            await ctx.send(_(ctx, "Rescheduling aborted."))
 
     @reminder_.command(name="delete", aliases=["remove"])
     async def reminder_delete(self, ctx, idx: int):
@@ -412,44 +386,19 @@ class Reminder(commands.Cog):
             return
 
         embed = await self._get_embed(ctx, query)
-        embed.add_field(
-            name=_(ctx, "Do you really want to delete this reminder?"),
-            value=_(ctx, "✅ for confirmation") + _(ctx, "❎ for storno"),
-            inline=False,
-        )
+        embed.title = _(ctx, "Do you want to delete this reminder?")
 
-        message = await ctx.send(embed=embed)
+        view = ConfirmView(ctx, embed)
 
-        await message.add_reaction("✅")
-        await message.add_reaction("❎")
+        value = await view.send()
 
-        def check_id(reaction, user_id):
-            return (
-                reaction.message.id == message.id
-                and (str(reaction.emoji) == "✅" or str(reaction.emoji) == "❎")
-                and user_id.id == query.recipient_id
-            )
-
-        try:
-            reaction, user = await self.bot.wait_for(
-                "reaction_add", check=check_id, timeout=60
-            )
-        except asyncio.TimeoutError:
+        if value is None:
             await ctx.send(_(ctx, "Deleting timed out."))
+        elif value:
+            query.delete()
+            await ctx.send(_(ctx, "Reminder deleted."))
         else:
-            if str(reaction.emoji) == "✅":
-                await bot_log.debug(
-                    ctx.author,
-                    ctx.channel,
-                    f"Deleting reminder from db - ID: {query.idx}, time: {query.remind_date}, status: {query.status}",
-                )
-                query.delete()
-            elif str(reaction.emoji) == "❎":
-                await ctx.send(_(ctx, "Deletion aborted."))
-        try:
-            await message.delete()
-        except (nextcord.errors.NotFound, nextcord.errors.Forbidden):
-            pass
+            await ctx.send(_(ctx, "Deleting aborted."))
 
 
 class ReminderDummy:
