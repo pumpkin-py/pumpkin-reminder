@@ -10,6 +10,9 @@ msgstr Zpráva
 msgid URL
 msgstr URL
 
+msgid (unknown)
+msgstr (neznámý)
+
 msgid Reminder ID
 msgstr ID upomínky
 
@@ -24,6 +27,9 @@ msgstr Datum připomenutí
 
 msgid Status
 msgstr Status
+
+msgid URL stub
+msgstr Část URL
 
 msgid I don't know how to parse `{datetime_str}`, please try again.
 msgstr Nevím jak přečíst `{datetime_str}`, zkus to znovu.

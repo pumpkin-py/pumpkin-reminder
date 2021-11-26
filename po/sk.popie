@@ -10,6 +10,9 @@ msgstr
 msgid URL
 msgstr
 
+msgid (unknown)
+msgstr
+
 msgid Reminder ID
 msgstr
 
@@ -24,6 +27,9 @@ msgstr
 
 msgid Status
 msgstr
+
+msgid URL stub
+msgstr 
 
 msgid I don't know how to parse `{datetime_str}`, please try again.
 msgstr

@@ -92,19 +92,9 @@ class Reminder(commands.Cog):
     async def _process_text(
         self, ctx: commands.Context, datetime_str: str, text: Optional[str]
     ):
-        if text is not None:
-            lines = ctx.message.content
-
-            lines = lines.split(datetime_str)[1]
-
-            lines = re.split(" ", lines)
-            while "" in lines:
-                lines.remove("")
-            text = " ".join(lines)
-
-            if len(text) > 1024:
-                text = text[:1024]
-                text = text[:-3] + "```" if lines.count("```") % 2 != 0 else lines
+        if text is not None and len(text) > 1024:
+            text = text[:1024]
+            text = text[:-3] + "```" if text.count("```") % 2 != 0 else text
 
         return text
 
@@ -146,8 +136,12 @@ class Reminder(commands.Cog):
             author = await self._get_member(item.author_id, item.guild_id)
             remind = await self._get_member(item.recipient_id, item.guild_id)
 
-            author_name = author.display_name if author is not None else "(unknown)"
-            remind_name = remind.display_name if remind is not None else "(unknown)"
+            author_name = (
+                author.display_name if author is not None else _(ctx, "(unknown)")
+            )
+            remind_name = (
+                remind.display_name if remind is not None else _(ctx, "(unknown)")
+            )
 
             reminder = ReminderDummy()
             reminder.idx = item.idx
@@ -167,7 +161,7 @@ class Reminder(commands.Cog):
                 "remind_name": _(ctx, "Reminded"),
                 "remind_date": _(ctx, "Remind date"),
                 "status": _(ctx, "Status"),
-                "url": "https://discord.com/channels/",
+                "url": _(ctx, "URL stub"),
             },
         )
 
@@ -194,9 +188,9 @@ class Reminder(commands.Cog):
     @commands.cooldown(rate=5, per=20.0, type=commands.BucketType.user)
     @commands.command()
     async def remindme(
-        self, ctx: commands.Context, datetime_str: str, text: Optional[str]
+        self, ctx: commands.Context, datetime_str: str, *, text: Optional[str]
     ):
-        text = await self._process_text(ctx, datetime_str, text)
+        text = await self._process_text(ctx, text)
 
         try:
             date = utils.time.parse_datetime(datetime_str)
@@ -237,8 +231,10 @@ class Reminder(commands.Cog):
     @commands.cooldown(rate=5, per=20.0, type=commands.BucketType.user)
     @commands.check(check.acl)
     @commands.command()
-    async def remind(self, ctx, member: nextcord.Member, datetime_str: str, text: str):
-        text = await self._process_text(ctx, datetime_str, text)
+    async def remind(
+        self, ctx, member: nextcord.Member, datetime_str: str, *, text: str
+    ):
+        text = await self._process_text(ctx, text)
 
         try:
             date = utils.time.parse_datetime(datetime_str)
