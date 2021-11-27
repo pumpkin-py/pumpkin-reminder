@@ -102,7 +102,7 @@ class Reminder(commands.Cog):
         reminder_user = await self._get_member(query.recipient_id, query.guild_id)
 
         if reminder_user is None:
-            reminder_user_name = "_(Unknown user)_"
+            reminder_user_name = "_({unknown_user})_".format(_(ctx, "Unknown user"))
         else:
             reminder_user_name = nextcord.utils.escape_markdown(
                 reminder_user.display_name
