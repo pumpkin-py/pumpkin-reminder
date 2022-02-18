@@ -38,7 +38,7 @@ msgid I don't know how to parse `{datetime_str}`, please try again.
 msgstr Nevím jak přečíst `{datetime_str}`, zkus to znovu.
 
 msgid Reminder for you created. Reminder will be sent: {date}
-msgstr Upomínka pro tebe vytvořena. Upomínka bude odesnála: {date}
+msgstr Upomínka pro tebe vytvořena. Upomínka bude odeslána: {date}
 
 msgid Reminder for {name} created. Reminder will be sent: {date}
 msgstr Upomínka pro {name} vytvořena. Upomínka bude odeslána: {date}
