@@ -121,7 +121,7 @@ class Countdown(commands.Cog):
             await ctx.reply(
                 _(
                     ctx,
-                    f"I don't know how to parse `{datetime_str}`, pleasy try again.",
+                    "I don't know how to parse `{datetime_str}`, pleasy try again.",
                 ).format(datetime_str=datetime_str)
             )
             return
