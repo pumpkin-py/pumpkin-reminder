@@ -3,7 +3,6 @@ from typing import Optional, List
 
 import dateutil.parser
 import dateutil.relativedelta
-import discord
 from discord.ext import commands
 
 from pie.utils import ConfirmView
@@ -27,21 +26,6 @@ class Countdown(commands.Cog):
             text = text[:-3] + "```" if text.count("```") % 2 != 0 else text
 
         return text
-
-    async def _get_member(self, user_id: int, guild_id: int = 0):
-        user = None
-
-        if guild_id > 0:
-            guild = self.bot.get_guild(guild_id)
-            user = guild.get_member(user_id)
-
-        if user is None:
-            try:
-                user = await self.bot.fetch_user(user_id)
-            except discord.errors.NotFound:
-                pass
-
-        return user
 
     def _get_remaining_time(self, countdown_item: CountdownItem) -> str:
         if countdown_item.countdown_date < datetime.now():
@@ -78,7 +62,7 @@ class Countdown(commands.Cog):
 
         for item in query:
 
-            countdown = CountdownDummy()
+            countdown = object()
             countdown.idx = item.idx
             countdown.name = item.name
             countdown.countdown_date = item.countdown_date.strftime("%Y-%m-%d %H:%M")
@@ -246,10 +230,6 @@ class Countdown(commands.Cog):
             )
 
         await self._send_countdown_list(ctx, query)
-
-
-class CountdownDummy:
-    pass
 
 
 async def setup(bot) -> None:
