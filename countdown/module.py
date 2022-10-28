@@ -97,7 +97,7 @@ class Countdown(commands.Cog):
     @check.acl2(check.ACLevel.MEMBER)
     @countdown_.command(name="set")
     async def countdown_set(
-        self, ctx: commands.Context, name: str, datetime_str: str, text: Optional[str]
+        self, ctx: commands.Context, name: str, datetime_str: str, *, text: Optional[str]
     ):
         """Set new countdown.
 
