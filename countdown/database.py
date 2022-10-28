@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from datetime import datetime
 
-import discord
 from sqlalchemy import BigInteger, Column, Integer, String, DateTime
 from typing import List, Dict, Optional
 
