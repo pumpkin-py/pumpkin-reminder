@@ -9,7 +9,7 @@ from pie.utils import ConfirmView
 from .database import CountdownItem
 from pie import check, i18n, logger, utils
 
-_ = i18n.Translator("modules/fun").translate
+_ = i18n.Translator("modules/reminder").translate
 bot_log = logger.Bot.logger()
 guild_log = logger.Guild.logger()
 
