@@ -23,7 +23,7 @@ class CountdownItem(database.base):
         status: Status of reminder
     """
 
-    __tablename__ = "fun_countdown_countdownitem"
+    __tablename__ = "fun_countdown_item"
 
     idx = Column(Integer, primary_key=True, autoincrement=True)
     guild_id = Column(BigInteger, default=None)
@@ -36,7 +36,8 @@ class CountdownItem(database.base):
 
     @staticmethod
     def add(
-        author: discord.Member,
+        guild_id: int,
+        author_id: int,
         name: str,
         permalink: str,
         message: str,
@@ -46,7 +47,7 @@ class CountdownItem(database.base):
         """Creates a new CountdownItem in the database.
 
         Args:
-            author: Countdown author.
+            author_id: Countdown author.
             name: Event name
             permalink: URL of countdown message.
             message: Countdown text (None if empty).
@@ -65,8 +66,8 @@ class CountdownItem(database.base):
             raise ValueError
 
         item = CountdownItem(
-            guild_id=author.guild.id if hasattr(author, "guild") else 0,
-            author_id=author.id,
+            guild_id=guild_id,
+            author_id=author_id,
             name=name,
             permalink=permalink,
             message=message,
@@ -89,9 +90,8 @@ class CountdownItem(database.base):
 
     @staticmethod
     def get_all(
-        guild: discord.Guild = None,
-        idx: int = None,
-        author: discord.Member = None,
+        guild_id: discord.Guild = None,
+        author_id: discord.Member = None,
         min_origin_date: datetime = None,
         max_origin_date: datetime = None,
         min_countdown_date: datetime = None,
@@ -100,10 +100,8 @@ class CountdownItem(database.base):
         """Retreives List of CountdownItem filtered by Guild ID.
 
         Args:
-            guild: Guild whose items are to be returned.
-            idx: ID of countdown item
-            author: discord.Member object user whose items are to be returned.
-            status: Status of items to be returned
+            guild_id: Guild whose items are to be returned.
+            author_id: User whose items are to be returned.
             min_origin_date: Filter items created after this date.
             max_origin_date: Filter items created before this date.
             min_countdown_date: Filter items being reminded after this date.
@@ -114,14 +112,11 @@ class CountdownItem(database.base):
         """
         query = session.query(CountdownItem)
 
-        if guild is not None:
-            query = query.filter_by(guild_id=guild.id)
+        if guild_id is not None:
+            query = query.filter_by(guild_id=guild_id)
 
-        if idx is not None:
-            query = query.filter_by(idx=idx)
-
-        if author is not None:
-            query = query.filter_by(author_id=author.id)
+        if author_id is not None:
+            query = query.filter_by(author_id=author_id)
 
         if min_origin_date is not None:
             query = query.filter(CountdownItem.origin_date > min_origin_date)

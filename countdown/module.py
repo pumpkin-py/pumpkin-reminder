@@ -21,6 +21,7 @@ class Countdown(commands.Cog):
         self.bot = bot
 
     async def _process_text(self, ctx: commands.Context, text: Optional[str]):
+        """Shortens text to 1024 characters. Places end of the code block at the end if the truncated text contains unclosed block."""
         if text is not None and len(text) > 1024:
             text = text[:1024]
             text = text[:-3] + "```" if text.count("```") % 2 != 0 else text
@@ -62,7 +63,7 @@ class Countdown(commands.Cog):
 
         for item in query:
 
-            countdown = object()
+            countdown = CountdownDummy()
             countdown.idx = item.idx
             countdown.name = item.name
             countdown.countdown_date = item.countdown_date.strftime("%Y-%m-%d %H:%M")
@@ -130,7 +131,8 @@ class Countdown(commands.Cog):
             return
 
         item = CountdownItem.add(
-            author=ctx.author,
+            guild_id=ctx.author.guild.id if hasattr(ctx.author, "guild") else 0,
+            author_id=ctx.author.id,
             name=name,
             permalink=ctx.message.jump_url,
             message=text,
@@ -223,13 +225,17 @@ class Countdown(commands.Cog):
             show_finished: True/False whether to show finished countdowns
         """
         if show_finished:
-            query = CountdownItem.get_all(author=ctx.author)
+            query = CountdownItem.get_all(author_id=ctx.author.id)
         else:
             query = CountdownItem.get_all(
-                author=ctx.author, min_remind_date=datetime.now()
+                author_id=ctx.author.id, min_countdown_date=datetime.now()
             )
 
         await self._send_countdown_list(ctx, query)
+
+
+class CountdownDummy:
+    pass
 
 
 async def setup(bot) -> None:
