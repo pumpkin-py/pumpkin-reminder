@@ -105,6 +105,7 @@ class Reminder(commands.Cog):
         embed = utils.discord.create_embed(
             author=reminder_user,
             title=_(utx, "Reminder"),
+            footer= query.idx
         )
 
         if query.author_id != query.recipient_id:
