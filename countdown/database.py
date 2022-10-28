@@ -90,8 +90,8 @@ class CountdownItem(database.base):
 
     @staticmethod
     def get_all(
-        guild_id: discord.Guild = None,
-        author_id: discord.Member = None,
+        guild_id: int = None,
+        author_id: int = None,
         min_origin_date: datetime = None,
         max_origin_date: datetime = None,
         min_countdown_date: datetime = None,
